@@ -1,0 +1,78 @@
+{extend name="admin@index_layout"/}
+{block name="main"}
+<div class="layui-card">
+    <div class="layui-card-header">添加配置项</div>
+    <div class="layui-card-body">
+        <form class="layui-form form-horizontal" action="{:url('cms/category/add')}" method="post">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">基本设置</li>
+                    <li>选项设置</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div class="layui-form-item">
+                            <label>上级菜单</label>
+                                <div class="w300">
+                                    <select name="parentid" lay-verify="required">
+                                        <option value="0">作为顶级栏目</option>
+                                        {$category|raw}
+                                    </select>
+                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label>栏目标题 </label>
+                                <div class="w300">
+                                    <input type="text" name="catname" autocomplete="off" placeholder="栏目名称" class="layui-input">
+                                </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label>唯一标识</label>
+                                <div class="w300">
+                                    <input type="text" name="catdir" autocomplete="off" placeholder="唯一标识" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">栏目唯一英文数字标识</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label>配置项分组</label>
+                            <div class="w300">
+                                <input type="text" name="config_group" autocomplete="off" placeholder="配置项分组" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">配置项分组唯一英文标识</div>
+                        </div>
+                        <div class="layui-form-item web_seo">
+                            <label>栏目简介</label>
+                                <div class="w300">
+                                    <textarea name="description" placeholder="栏目简介" class="layui-textarea"></textarea>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item">
+                        <div class="layui-form-item">
+                            <label>显示排序</label>
+                                <div class="w300">
+                                    <input type="text" name="listorder" autocomplete="off" placeholder="显示排序" class="layui-input" value="100">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="type" value="4">
+                <div class="layui-form-item">
+                    <div>
+                        <button class="layui-btn ajax-post" lay-submit lay-filter="*" target-form="form-horizontal">立即提交</button>
+                        <a class="layui-btn layui-btn-normal" href="{:url('cms/category/index')}">返回</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script type="text/javascript" src="__STATIC__/admin/js/common.js"></script>
+<script type="text/javascript" src="__STATIC__/libs/webuploader/webuploader.min.js"></script>
+<script type="text/javascript" src="__STATIC__/libs/Sortable.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/js/form.js"></script>
+<link rel="stylesheet" href="__STATIC__/libs/webuploader/webuploader.css">
+{/block}
