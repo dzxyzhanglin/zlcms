@@ -104,7 +104,6 @@ class Category extends Adminbase
                 case 4:
                     $fields = ['parentid', 'catname', 'catdir', 'type', 'modelid', 'image', 'description', 'url', 'config_group', 'setting', 'listorder', 'letter', 'status'];
                     $scene = 'config';
-                    $data['status'] = 0;
                     break;
                 default:
                     return $this->error('栏目类型错误~');
@@ -217,7 +216,6 @@ class Category extends Adminbase
                     break;
                 case 4:
                     $data['modelid'] = 0;
-                    $data['status'] = 0;
                     $scene = 'config';
                     break;
                     break;

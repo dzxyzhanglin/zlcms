@@ -7340,9 +7340,12 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             var me = this;
 
             me.fireEvent('beforesetcontent', html);
+			// 2019-06-30
+			/*
             var root = UE.htmlparser(html);
             me.filterInputRule(root);
             html = root.toHtml();
+			*/
 
             me.body.innerHTML = (isAppendTo ? me.body.innerHTML : '') + html;
 
@@ -17766,7 +17769,9 @@ UE.plugins['video'] = function (){
             for(var i=0,vi,len = videoObjs.length;i<len;i++){
                 vi = videoObjs[i];
                 cl = (type == 'upload' ? 'edui-upload-video video-js vjs-default-skin':'edui-faked-video');
-                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id + i, null, cl, 'image'));
+				// 2019-06-30
+                //html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id + i, null, cl, 'image'));
+                html.push(creatInsertStr( vi.url, vi.width || 420,  vi.height || 280, id + i, null, cl, 'video'));
             }
             me.execCommand("inserthtml",html.join(""),true);
             var rng = this.selection.getRange();
@@ -24818,7 +24823,7 @@ UE.plugin.register('insertfile', function (){
 UE.plugins.xssFilter = function() {
 
 	var config = UEDITOR_CONFIG;
-	var whitList = config.whitList;
+	var whitList = config.whitList; 
 
 	function filter(node) {
 

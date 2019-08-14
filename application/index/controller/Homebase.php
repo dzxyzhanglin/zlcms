@@ -26,10 +26,7 @@ class Homebase extends Base
     {
         parent::initialize();
         $this->cmsConfig = cache("Config");
-        $this->assign("cms_config", $this->cmsConfig);
-        /*if (!$this->cmsConfig['web_site_status']) {
-            $this->error("站点已经关闭，请稍后访问~");
-        }*/
+        $this->assign("cfg", $this->cmsConfig); 
     }
 
     protected function fetch($template = '', $vars = [], $config = [])

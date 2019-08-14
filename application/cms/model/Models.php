@@ -237,13 +237,13 @@ EOF;
                 'iffixed' => 0,
                 'setting' => "a:3:{s:6:\"define\";s:32:\"varchar(255) NOT NULL DEFAULT ''\";s:7:\"options\";s:0:\"\";s:5:\"value\";s:0:\"\";}",
             ],
-            [
+            /*[
                 'name' => 'flag',
                 'title' => '属性',
                 'type' => 'checkbox',
                 'ifeditable' => 1,
                 'setting' => "a:3:{s:6:\"define\";s:31:\"varchar(32) NOT NULL DEFAULT ''\";s:7:\"options\";s:76:\"1:置顶[1]\r\n2:头条[2]\r\n3:特荐[3]\r\n4:推荐[4]\r\n5:热点[5]\r\n6:幻灯[6]\";s:5:\"value\";s:0:\"\";}",
-            ],
+            ],*/
             [
                 'name' => 'keywords',
                 'title' => 'SEO关键词',
@@ -307,14 +307,14 @@ EOF;
                 'listorder' => 200,
                 'setting' => "a:3:{s:6:\"define\";s:37:\"int(11) UNSIGNED NOT NULL DEFAULT '0'\";s:7:\"options\";s:0:\"\";s:5:\"value\";s:0:\"\";}",
             ],
-            [
+            /*[
                 'name' => 'hits',
                 'title' => '点击量',
                 'type' => 'number',
                 'ifeditable' => 1,
                 'listorder' => 200,
                 'setting' => "a:3:{s:6:\"define\";s:42:\"mediumint(8) UNSIGNED NOT NULL DEFAULT '0'\";s:7:\"options\";s:0:\"\";s:5:\"value\";s:1:\"0\";}",
-            ],
+            ],*/
         ];
         if ($type == 2) {
             array_push($data, [

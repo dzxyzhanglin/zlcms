@@ -282,6 +282,16 @@ function list_to_tree($list, $pk = 'id', $pid = 'parentid', $child = '_child', $
     return $tree;
 }
 
+
+/**
+ * 解析换行符分割的配置
+ * @param $value
+ * @return array|false|string[]
+ */
+function split_attr($value) {
+    return preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
+}
+
 /**
  * 解析配置
  * @param string $value 配置值
@@ -289,7 +299,7 @@ function list_to_tree($list, $pk = 'id', $pid = 'parentid', $child = '_child', $
  */
 function parse_attr($value = '')
 {
-    $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
+    $array = split_attr($value);
     if (strpos($value, ':')) {
         $value = array();
         foreach ($array as $val) {
@@ -301,6 +311,7 @@ function parse_attr($value = '')
     }
     return $value;
 }
+
 
 /**
  * 时间戳格式化
@@ -740,6 +751,7 @@ function getCategory($catid, $field = '', $newCache = false)
  */
 function getCategoryMenuTree($parentid) {
     $categorys = cache('Category');
+	$ret = [];
     foreach ($categorys as $rs) {
         $rs = getCategory($rs['id']);
         //剔除无子栏目外部链接
@@ -803,4 +815,72 @@ function buildCatUrl($type, $id, $url = '')
     }
 
     return $url;
+}
+
+/**
+ * 判断是否是手机访问
+ */
+function isMobile()
+{
+	// 如果有Http_X_WAP_PROFILE则一定是移动设备
+	if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])) {
+		return true;
+	}
+
+	// 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
+	if (isset ($_SERVER['HTTP_VIA'])) {
+		// 找不到为flase,否则为true
+		return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+	}
+
+	// 脑残法，判断手机发送的客户端标志,兼容性有待提高
+	if (isset ($_SERVER['HTTP_USER_AGENT'])) {
+		$clientkeywords = array('nokia',
+			'sony',
+			'eriCSSon',
+			'mot',
+			'samsung',
+			'htc',
+			'sgh',
+			'lg',
+			'sharp',
+			'sie-',
+			'philips',
+			'panasonic',
+			'alcatel',
+			'lenovo',
+			'iphone',
+			'ipod',
+			'blackberry',
+			'meizu',
+			'android',
+			'netfront',
+			'symbian',
+			'ucweb',
+			'windowsce',
+			'palm',
+			'operamini',
+			'operamobi',
+			'openwave',
+			'nexusone',
+			'cldc',
+			'midp',
+			'wap',
+			'mobile'
+		);
+// 从HTTP_USER_AGENT中查找手机浏览器的关键字
+		if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+			return true;
+		}
+	}
+
+	// 协议法，因为有可能不准确，放到最后判断
+	if (isset ($_SERVER['HTTP_ACCEPT'])) {
+		// 如果只支持wml并且不支持HTML那一定是移动设备
+		// 如果支持wml和html但是wml在html之前则是移动设备
+		if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
+			return true;
+		}
+	}
+	return false;
 }

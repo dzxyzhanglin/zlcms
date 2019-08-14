@@ -22,7 +22,7 @@ class Config extends Validate
     protected $rule = [
         'group|配置分组' => 'require',
         'type|配置类型' => 'require|alpha',
-        'title|配置标题' => 'require|chsAlphaNum',
+        'title|配置标题' => 'require',
         'name|配置名称' => 'require|regex:^[a-zA-Z]\w{0,39}$|unique:config',
         'listorder|排序' => 'number',
     ];

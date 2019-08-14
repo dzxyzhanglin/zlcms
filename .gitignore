@@ -20,4 +20,5 @@ composer.phar
 /log/
 /**/log/
 /**/temp/
+/**/runtime/
 
