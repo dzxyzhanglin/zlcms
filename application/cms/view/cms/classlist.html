@@ -9,12 +9,12 @@
     <!--搜索-->
     <div class="searchTable">{include file="admin@searchItem" /}</div>
     <!--表格-->
-    <table class="layui-hide" id="table" lay-filter="table"></table>
+    <table class="layui-hide" id="tablelist" lay-filter="tablelist"></table>
 </div>
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
       <a class="layui-btn layui-btn-sm" href="{:url('cms/cms/add',['catid'=>$catid])}">新增内容</a>
-      <a class="layui-btn layui-btn-sm layui-btn-danger" id="delAll">批量删除</a>
+      <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delAlls">批量删除</a>
     </div>
 </script>
 <script type="text/html" id="barTool">
@@ -54,19 +54,17 @@ layui.use('table', function() {
         $ = layui.$,
         form = layui.form;
     table.render({
-        id: 'tablelist',
-        elem: '#table',
+        elem: '#tablelist',
         toolbar: '#toolbarDemo',
         url: '{:url("cms/cms/classlist",["catid"=>$catid])}',
+        id: 'cmstablelist',
         cols: [
             [
                 { type: 'checkbox', fixed: 'left' },
                 { field: 'listorder', width: 70, title: '排序', edit: 'text' },
                 { field: 'id', width: 70, title: 'ID' },
                 { field: 'title', title: '标题',templet: '#title'},
-                //{ field: 'hits', width: 80, title: '点击量' },
                 { field: 'updatetime', width: 180, title: '更新时间' },
-                //{ field: 'url',width: 60,align:"center", title: 'URL',templet:'<div><a href="{{ d.url }}" target="_blank"><i class="iconfont icon-lianjie"></i></a></div>'},
                 { field: 'status', width: 100, align: "center", title: '状态', templet: '#statusTpl', unresize: true },
                 { fixed: 'right', width: 150, title: '操作', toolbar: '#barTool' }
             ]
@@ -75,7 +73,7 @@ layui.use('table', function() {
     });
 
         //监听单元格编辑
-    table.on('edit(table)', function(obj) {
+    table.on('edit(tablelist)', function(obj) {
         var value = obj.value,data = obj.data;
         $.post('{:url("cms/cms/listorder")}', {'id': data.id, 'catid': catid, 'value':value }, function(data) {
             if (data.code == 1) {
@@ -102,55 +100,53 @@ layui.use('table', function() {
         });
     });
 
-
-    $('body').on('click', '#delAll', function() {
-        var checkStatus = table.checkStatus('tablelist'),
+    // 头工具栏事件
+    table.on('toolbar(tablelist)', function(obj) {
+        var checkStatus = table.checkStatus(obj.config.id),
             data = checkStatus.data,
-            ids = [];
+            ids = []; 
         console.log(checkStatus);
-        if (data.length > 0) {
-            for (let i in data) {
-                ids.push(data[i].id);
-            }
-            layer.confirm('确定删除选中的数据？', { icon: 3, title: '提示信息' }, function(index) {
-                $.post('{:url("cms/cms/delete",["catid"=>$catid])}', { 'ids': ids }, function(data) {
-                    if (data.code == 1) {
-                        if (data.url) {
-                            layer.msg(data.msg + ' 页面即将自动跳转~');
-                        } else {
-                            layer.msg(data.msg);
-                        }
-                        setTimeout(function() {
-                            if (data.url) {
-                                location.href = data.url;
-                            } else {
-                                location.reload();
-                            }
-                        }, 1500);
-                    } else {
-                        layer.msg(data.msg);
-                        setTimeout(function() {
-                            if (data.url) {
-                                location.href = data.url;
-                            }
-                        }, 1500);
+        switch (obj.event) {
+            case 'delAlls':
+                if (data.length > 0) {
+                    for (var i in data) {
+                        ids.push(data[i].id);
                     }
-                });
-                layer.close(index);
-            })
-        } else {
-            layer.msg("请选择需要删除的数据");
+                    layer.confirm('确定删除选中的数据？', { icon: 3, title: '提示信息' }, function(index) {
+                        $.post('{:url("cms/cms/delete",["catid"=>$catid])}', { 'ids': ids }, function(data) {
+                            if (data.code == 1) {
+                                if (data.url) {
+                                    layer.msg(data.msg + ' 页面即将自动跳转~');
+                                } else {
+                                    layer.msg(data.msg);
+                                }
+                                setTimeout(function() {
+                                    if (data.url) {
+                                        location.href = data.url;
+                                    } else {
+                                        location.reload();
+                                    }
+                                }, 1500);
+                            } else {
+                                layer.msg(data.msg);
+                                setTimeout(function() {
+                                    if (data.url) {
+                                        location.href = data.url;
+                                    }
+                                }, 1500);
+                            }
+                        });
+                        layer.close(index);
+                    })
+                } else {
+                    layer.msg("请选择需要删除的数据");
+                }
+            break;
         }
     });
 
-    /*table.on('toolbar(table)', function(obj) {
-        if (obj.event === 'delAll') {
-
-        }
-    });*/
-
     //监听行工具事件
-    table.on('tool(table)', function(obj) {
+    table.on('tool(tablelist)', function(obj) {
         var data = obj.data;
         if (obj.event === 'del') {
             layer.confirm('确定删除这条数据？', { icon: 3, title: '提示' }, function(index) {
@@ -197,7 +193,7 @@ layui.use('table', function() {
             });
 
             //执行重载
-            table.reload('tablelist', {
+            table.reload('cmstablelist', {
                 page: {
                     curr: 1 //重新从第 1 页开始
                 }
