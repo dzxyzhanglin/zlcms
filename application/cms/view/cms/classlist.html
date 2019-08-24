@@ -104,7 +104,7 @@ layui.use('table', function() {
     table.on('toolbar(tablelist)', function(obj) {
         var checkStatus = table.checkStatus(obj.config.id),
             data = checkStatus.data,
-            ids = []; 
+            ids = [];
         console.log(checkStatus);
         switch (obj.event) {
             case 'delAlls':
