@@ -14,6 +14,14 @@ use think\Paginator;
 
 class Page extends Paginator
 {
+    private $previousText = '上一页';
+    private $nextText = '下一页';
+
+    private $pageWrapper = '<div class="pages">%s %s %s</div>';
+    private $activePageWrapper = '<div class="page pagecheck">ACTIVE_TEXT</div>';
+    private $availablePageWrapper = '<div class="page"><a href="PAGE_URL" >PAGE_TEXT</a></div>';
+    private $previousPageWrapper = '<div class="last"><a href="PAGE_URL" >PAGE_TEXT</a></div>';
+    private $nextPageWrapper = '<div class="last"><a href="PAGE_URL" style="color:#004fa1;">PAGE_TEXT</a></div>';
 
     /**
      * 上一页按钮
@@ -111,16 +119,16 @@ class Page extends Paginator
         if ($this->hasPages()) {
             if ($this->simple) {
                 return sprintf(
-                    '<ul id="pager">%s %s</ul>',
+                    '<div id="pager">%s %s</div>',
                     $this->getPreviousButton(),
                     $this->getNextButton()
                 );
             } else {
                 return sprintf(
-                    '<ul id="pages">%s %s %s</ul>',
-                    $this->getPreviousButton(),
+                    $this->pageWrapper,
+                    $this->getPreviousButton($this->previousText),
                     $this->getLinks(),
-                    $this->getNextButton()
+                    $this->getNextButton($this->nextText)
                 );
             }
         }
@@ -135,7 +143,18 @@ class Page extends Paginator
      */
     protected function getAvailablePageWrapper($url, $page)
     {
-        return '<li><a href="' . htmlentities($url) . '">' . $page . '</a></li>';
+        $pageWrapper = $this->availablePageWrapper;
+        if ($page == $this->previousText) {
+            $pageWrapper = $this->previousPageWrapper;
+        } else if ($page == $this->nextText) {
+            $pageWrapper = $this->nextPageWrapper;
+        }
+
+        $pageWrapper = str_replace('PAGE_URL', htmlentities($url), $pageWrapper);
+        $pageWrapper = str_replace('PAGE_TEXT', $page, $pageWrapper);
+        return $pageWrapper;
+
+        //return '<li><a href="' . htmlentities($url) . '">' . $page . '</a></li>';
     }
 
     /**
@@ -146,6 +165,7 @@ class Page extends Paginator
      */
     protected function getDisabledTextWrapper($text)
     {
+        //return '<div class="page pagecheck">' . $text . '</div>';
         return '<li class="disabled"><span>' . $text . '</span></li>';
     }
 
@@ -157,7 +177,8 @@ class Page extends Paginator
      */
     protected function getActivePageWrapper($text)
     {
-        return '<li class="active"><span>' . $text . '</span></li>';
+        return str_replace('ACTIVE_TEXT', $text, $this->activePageWrapper);
+        //return '<li class="active"><span>' . $text . '</span></li>';
     }
 
     /**

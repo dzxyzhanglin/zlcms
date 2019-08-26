@@ -26,15 +26,31 @@
             <div class="layui-form-field-label">
                 <script type="text/javascript" src="__STATIC__/libs/ueditor/ueditor.config.js"></script>
                 <script type="text/javascript" src="__STATIC__/libs/ueditor/ueditor.all.js"></script>
-                <script type="text/javascript">
-                var modelFieldExtcontent = UE.getEditor('modelFieldcontent', {
-                    initialFrameWidth: null,
-                    initialFrameHeight: 250,
-                    serverUrl: "{:url('attachment/Ueditor/run')}"
-                });
-                </script>
                 <script type="text/plain" id="modelFieldcontent" name="modelField[content]">{$info['content']|raw}</script>
             </div>
+            <div style="margin-top: 5px;">
+                <a class="layui-btn layui-btn-sm" id="contentgrabimg">图片本地化</a>
+            </div>
+            <script>
+                layui.use(['layer'], function() {
+                    var layer = layui.layer;
+
+                    var modelFieldExtcontent = UE.getEditor('modelFieldcontent', {
+                        initialFrameWidth: null,
+                        initialFrameHeight: 250,
+                        serverUrl: "{:url('attachment/Ueditor/run')}"
+                    });
+
+                    $('#contentgrabimg').on('click', function() {
+                        var con = modelFieldExtcontent.getContent();
+                        $.post(GV.ueditor_grabimg_url, { 'content': con, 'type': 'images' },
+                            function(data) {
+                                modelFieldExtcontent.setContent(data);
+                                layer.msg("图片本地化完成");
+                            }, 'html');
+                    });
+                });
+            </script>
         </div>
         <input type="hidden" name="modelField[catid]" value="{$catid}">
         <div>
