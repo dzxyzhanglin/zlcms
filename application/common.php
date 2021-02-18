@@ -745,6 +745,19 @@ function getCategory($catid, $field = '', $newCache = false)
 }
 
 /**
+ * 查询子集分类
+ * @param $catid
+ */
+function getChildCategory($catid) {
+    $categorys = db('category')->where(['parentid' => $catid, 'status' => 1])->order('listorder ASC')->select();
+    foreach ($categorys as $category) {
+        $category['setting'] = unserialize($category['setting']);
+        $category['url'] = buildCatUrl($category['type'], $category['id']);
+    }
+    return $categorys;
+}
+
+/**
  * 获取栏目后台菜单树
  * @param $parentid
  * @return mixed
